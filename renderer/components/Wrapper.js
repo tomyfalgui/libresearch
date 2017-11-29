@@ -2,8 +2,9 @@ import styled, { injectGlobal } from 'styled-components'
 
 const Wrapper = styled.div`
   display: grid;
-  height: 100vh;
-  grid-template-rows: 150px 5fr 1fr;
+  max-height: 100vh;
+  grid-template-rows: 50px 1fr 5fr;
+  grid-row-gap: 12px;
 `
 
 export default ({ children }) => <Wrapper>{children}</Wrapper>

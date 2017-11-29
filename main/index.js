@@ -36,6 +36,31 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit)
 
 const db = new PouchDB(path.join(app.getAppPath(), 'db'))
+var url = 'http://localhost:5984/mydb'
+var opts = { live: true, retry: true }
+
+db.replicate.from(url).on('complete', function(info) {
+  db
+    .sync(url, opts)
+    .on('change', info => {
+      console.log('change:' + info)
+    })
+    .on('paused', paused => {
+      console.log('paused' + paused)
+    })
+    .on('error', err => {
+      console.log('error:' + err)
+    })
+    .on('complete', _ => {
+      console.log('completed:')
+    })
+    .on('active', _ => {
+      console.log('Active:')
+    })
+    .on('denied', err => {
+      console.log('Denied:' + err)
+    })
+})
 
 ipcMain.on('updateorsave:data', async (e, arg1) => {
   const result = (await db.find({
@@ -67,12 +92,37 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
 
   /* ENTERED CODE */
 
-  db.sync('db', 'http://localhost:5984/mydb')
+  db
+    .sync(url, opts)
+    .on('change', info => {
+      console.log('change:' + info)
+    })
+    .on('paused', paused => {
+      console.log('paused' + paused)
+    })
+    .on('error', err => {
+      console.log('error:' + err)
+    })
+    .on('complete', _ => {
+      console.log('completed:')
+    })
+    .on('active', _ => {
+      console.log('Active:')
+    })
+    .on('denied', err => {
+      console.log('Denied:' + err)
+    })
 })
 
 ipcMain.on('delete:data', async (e, arg1) => {
   db.destroy()
-  db.sync('db', 'http://localhost:5984/mydb')
+  //db.sync('db', 'http://localhost:5984/mydb')
 })
 
-ipcMain.on('get:data', async (e, arg1) => {})
+global.getData = async function() {
+  var result = await db.allDocs({
+    include_docs: true,
+    attachments: true
+  })
+  return result
+}

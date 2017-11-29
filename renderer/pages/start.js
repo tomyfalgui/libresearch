@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Reader from '../components/ScannerWrapper'
+import Table from '../components/TableWrapper'
 import Wrapper from '../components/Wrapper'
 import Header from '../components/Header'
 
@@ -11,6 +12,7 @@ export default class Start extends Component {
       <Wrapper>
         <Header />
         <Reader />
+        <Table />
       </Wrapper>
     )
   }
