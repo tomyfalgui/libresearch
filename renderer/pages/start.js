@@ -4,9 +4,7 @@ import Table from '../components/TableWrapper'
 import Wrapper from '../components/Wrapper'
 import Header from '../components/Header'
 
-import path from 'path'
-
-export default class Start extends Component {
+class Start extends Component {
   render() {
     return (
       <Wrapper>
@@ -17,3 +15,5 @@ export default class Start extends Component {
     )
   }
 }
+
+export default Start
