@@ -64,21 +64,28 @@ db.replicate.from(url).on('complete', function(info) {
 
 ipcMain.on('updateorsave:data', async (e, arg1) => {
   const result = (await db.find({
-    selector: { LRN: arg1, exited: null, updated: false }
+    selector: { LRN: arg1, exited: null, updated: false, total_time: null }
   })).docs
   if (result.length) {
     const [first] = result
     const onlyOne = (await db.find({
-      selector: { _id: first._id, exited: null, updated: false }
+      selector: {
+        _id: first._id,
+        exited: null,
+        updated: false,
+        total_time: null
+      }
     })).docs
     const { LRN } = onlyOne[0]
+    const exited = Date.now()
     await db.put({
       _id: onlyOne[0]._id,
       _rev: onlyOne[0]._rev,
       entered: onlyOne[0].entered,
       LRN: onlyOne[0].LRN,
-      exited: Date.now(),
-      updated: true
+      exited,
+      updated: true,
+      total_time: exited - onlyOne[0].entered
     })
   } else {
     await db.put({
@@ -86,7 +93,8 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
       LRN: arg1,
       entered: Date.now(),
       exited: null,
-      updated: false
+      updated: false,
+      total_time: null
     })
   }
 

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import styled from 'styled-components'
-import bemto from 'bemto-components'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 const Table = styled.table`
   width: 100%;
@@ -48,27 +48,26 @@ const Body = styled.tr`
   }
 `
 
+const Fade = ({ children, ...props }) => (
+  <CSSTransition {...props} timeout={1000} classNames="fade">
+    {children}
+  </CSSTransition>
+)
+
 function Rows({ rows }) {
   return (
     rows &&
     rows.sort((a, b) => a.doc.entered < b.doc.entered).map(({ doc }) => {
+      const { total_time, _id, entered, exited, LRN } = doc
       return (
-        <Body key={doc._id}>
-          <td className="tcell tcell--2">{doc.LRN}</td>
+        <Body key={_id}>
+          <td className="tcell tcell--2">{LRN}</td>
+          <td className="tcell">{new Date(entered).toLocaleDateString()}</td>
+          <td className="tcell">{new Date(entered).toLocaleTimeString()}</td>
           <td className="tcell">
-            {new Date(doc.entered).toLocaleDateString()}
+            {exited ? new Date(exited).toLocaleTimeString() : 'ehhh'}
           </td>
-          <td className="tcell">
-            {new Date(doc.entered).toLocaleTimeString()}
-          </td>
-          <td className="tcell">
-            {doc.exited ? new Date(doc.exited).toLocaleTimeString() : 'ehhh'}
-          </td>
-          <td className="tcell">
-            {new Date(doc.entered).toLocaleTimeString()}-{doc.exited
-              ? new Date(doc.exited).toLocaleTimeString()
-              : 'ehhh'}
-          </td>
+          <td className="tcell">{total_time || 'nigga'}</td>
         </Body>
       )
     })

@@ -4,6 +4,7 @@ import Reader from './Reader'
 import Sine from './Sine'
 import Header from './Header'
 import Table from './Table'
+import Filters from './Filters'
 import { remote, ipcRenderer } from 'electron'
 
 const Wrapper = styled.div`
@@ -14,6 +15,10 @@ const Wrapper = styled.div`
   width: 90%;
   margin-left: auto;
   margin-right: auto;
+`
+
+const SpecialDiv = styled.div`
+  display: flex;
 `
 
 export default class Global extends Component {
@@ -55,7 +60,10 @@ export default class Global extends Component {
     return (
       <Wrapper>
         <Header />
-        <Reader saveToDatabase={this.updateOrSaveToDatabase} />
+        <SpecialDiv>
+          <Reader saveToDatabase={this.updateOrSaveToDatabase} />
+          <Filters />
+        </SpecialDiv>
         <Sine playing={this.state.playing} />
         <Table rows={this.state.rows} total_rows={this.state.total_rows} />
       </Wrapper>
@@ -82,4 +90,6 @@ injectGlobal`
     padding:0;
   }
   
+ 
+
 `
