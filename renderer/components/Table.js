@@ -51,7 +51,7 @@ const Body = styled.tr`
 function Rows({ rows }) {
   return (
     rows &&
-    rows.map(({ doc }) => {
+    rows.sort((a, b) => a.doc.entered < b.doc.entered).map(({ doc }) => {
       return (
         <Body key={doc._id}>
           <td className="tcell tcell--2">{doc.LRN}</td>
@@ -86,7 +86,7 @@ export default ({ rows }) => (
         <th className="theader">Total Time</th>
       </Header>
     </thead>
-    <tbody style={{ overflow: 'scroll', height: '300px', display: 'block' }}>
+    <tbody style={{ overflow: 'scroll', height: '40vh', display: 'block' }}>
       <Rows rows={rows} />
     </tbody>
   </Table>
