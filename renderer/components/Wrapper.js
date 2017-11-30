@@ -25,7 +25,8 @@ export default class Global extends Component {
   state = {
     playing: false,
     rows: null,
-    total_rows: null
+    total_rows: null,
+    totalTime: null
   }
 
   updateOrSaveToDatabase = data => () => {
@@ -49,7 +50,13 @@ export default class Global extends Component {
   getDatabase = async () => {
     const data = await remote.getGlobal('getData')()
     const { rows, total_rows } = data
-    this.setState({ rows, total_rows })
+    const totalTime = rows.reduce((acc, { doc }) => {
+      if (!doc.updated) {
+        return
+      }
+      return acc + doc.total_time
+    }, 0)
+    this.setState({ rows, total_rows, totalTime })
   }
 
   componentDidMount() {
@@ -57,6 +64,7 @@ export default class Global extends Component {
   }
 
   render() {
+    const { totalTime, rows, total_rows, playing } = this.state
     return (
       <Wrapper>
         <Header />
@@ -64,8 +72,8 @@ export default class Global extends Component {
           <Reader saveToDatabase={this.updateOrSaveToDatabase} />
           <Filters />
         </SpecialDiv>
-        <Sine playing={this.state.playing} />
-        <Table rows={this.state.rows} total_rows={this.state.total_rows} />
+        <Sine playing={playing} />
+        <Table rows={rows} total_rows={total_rows} total_time={totalTime} />
       </Wrapper>
     )
   }

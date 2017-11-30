@@ -1,12 +1,17 @@
 import _ from 'lodash'
 import styled from 'styled-components'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { differenceInMilliseconds, differenceInSeconds } from 'date-fns'
+import { secondsToHms, getYoutubeLikeToDisplay } from '../helpers'
+import React from 'react'
+const Fragment = React.Fragment
 
 const Table = styled.table`
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
+  height: '40vh';
 
   thead {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
@@ -48,11 +53,20 @@ const Body = styled.tr`
   }
 `
 
-const Fade = ({ children, ...props }) => (
-  <CSSTransition {...props} timeout={1000} classNames="fade">
-    {children}
-  </CSSTransition>
-)
+const Footer = styled.tr`
+  padding-left: 24px;
+  display: flex;
+  margin-top: 15px;
+`
+
+const Td = styled.td`
+  flex: 1;
+  text-align: left;
+`
+
+const Td2 = Td.extend`
+  flex: 2;
+`
 
 function Rows({ rows }) {
   return (
@@ -61,20 +75,32 @@ function Rows({ rows }) {
       const { total_time, _id, entered, exited, LRN } = doc
       return (
         <Body key={_id}>
-          <td className="tcell tcell--2">{LRN}</td>
-          <td className="tcell">{new Date(entered).toLocaleDateString()}</td>
-          <td className="tcell">{new Date(entered).toLocaleTimeString()}</td>
-          <td className="tcell">
-            {exited ? new Date(exited).toLocaleTimeString() : 'ehhh'}
-          </td>
-          <td className="tcell">{total_time || 'nigga'}</td>
+          <Td2>{LRN}</Td2>
+          <Td>{new Date(entered).toLocaleDateString()}</Td>
+          <Td>{new Date(entered).toLocaleTimeString()}</Td>
+          <Td>{exited ? new Date(exited).toLocaleTimeString() : 'ehhh'}</Td>
+          <Td>{secondsToHms(total_time)}</Td>
         </Body>
       )
     })
   )
 }
 
-export default ({ rows }) => (
+function FooterBody({ display }) {
+  return (
+    <Fragment>
+      <td style={{ flex: 2 }} key={1} />
+      <td style={{ flex: 1 }} key={2} />
+      <td style={{ flex: 1 }} key={3} />
+      <td style={{ flex: 1 }} key={4} />
+      <td style={{ flex: 1 }} key={5}>
+        {display}
+      </td>
+    </Fragment>
+  )
+}
+
+export default ({ rows, total_time }) => (
   <Table>
     <thead style={{ position: 'relative', display: 'block' }}>
       <Header>
@@ -85,7 +111,15 @@ export default ({ rows }) => (
         <th className="theader">Total Time</th>
       </Header>
     </thead>
-    <tbody style={{ overflow: 'scroll', height: '40vh', display: 'block' }}>
+    <tfoot>
+      <Footer>
+        <FooterBody display={getYoutubeLikeToDisplay(total_time)} />
+      </Footer>
+      <Footer>
+        <FooterBody display={secondsToHms(total_time)} />
+      </Footer>
+    </tfoot>
+    <tbody style={{ overflow: 'scroll', display: 'block' }}>
       <Rows rows={rows} />
     </tbody>
   </Table>
