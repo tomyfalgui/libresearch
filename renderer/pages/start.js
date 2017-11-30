@@ -6,13 +6,7 @@ import Header from '../components/Header'
 
 class Start extends Component {
   render() {
-    return (
-      <Wrapper>
-        <Header />
-        <Reader />
-        <Table />
-      </Wrapper>
-    )
+    return <Wrapper />
   }
 }
 

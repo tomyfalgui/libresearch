@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import styled from 'styled-components'
 import bemto from 'bemto-components'
 
@@ -47,7 +48,34 @@ const Body = styled.tr`
   }
 `
 
-export default () => (
+function Rows({ rows }) {
+  return (
+    rows &&
+    rows.map(({ doc }) => {
+      return (
+        <Body key={doc._id}>
+          <td className="tcell tcell--2">{doc.LRN}</td>
+          <td className="tcell">
+            {new Date(doc.entered).toLocaleDateString()}
+          </td>
+          <td className="tcell">
+            {new Date(doc.entered).toLocaleTimeString()}
+          </td>
+          <td className="tcell">
+            {doc.exited ? new Date(doc.exited).toLocaleTimeString() : 'ehhh'}
+          </td>
+          <td className="tcell">
+            {new Date(doc.entered).toLocaleTimeString()}-{doc.exited
+              ? new Date(doc.exited).toLocaleTimeString()
+              : 'ehhh'}
+          </td>
+        </Body>
+      )
+    })
+  )
+}
+
+export default ({ rows }) => (
   <Table>
     <thead style={{ position: 'relative', display: 'block' }}>
       <Header>
@@ -59,15 +87,7 @@ export default () => (
       </Header>
     </thead>
     <tbody style={{ overflow: 'scroll', height: '300px', display: 'block' }}>
-      {Array.from({ length: 30 }).map(el => (
-        <Body>
-          <td className="tcell tcell--2">Hi There</td>
-          <td className="tcell">Hello</td>
-          <td className="tcell">How Are You?</td>
-          <td className="tcell">Im cool</td>
-          <td className="tcell">Im cool</td>
-        </Body>
-      ))}
+      <Rows rows={rows} />
     </tbody>
   </Table>
 )

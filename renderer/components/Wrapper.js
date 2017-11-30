@@ -1,4 +1,10 @@
 import styled, { injectGlobal } from 'styled-components'
+import React, { Component } from 'react'
+import Reader from './Reader'
+import Sine from './Sine'
+import Header from './Header'
+import Table from './Table'
+import { remote, ipcRenderer } from 'electron'
 
 const Wrapper = styled.div`
   display: grid;
@@ -7,7 +13,52 @@ const Wrapper = styled.div`
   grid-row-gap: 12px;
 `
 
-export default ({ children }) => <Wrapper>{children}</Wrapper>
+export default class Global extends Component {
+  state = {
+    playing: false,
+    rows: null,
+    total_rows: null
+  }
+
+  updateOrSaveToDatabase = data => () => {
+    console.log(this.state)
+    ipcRenderer.send('updateorsave:data', data)
+    this.setState(
+      state => ({ playing: !state.playing }),
+      () => {
+        console.log(this.state)
+
+        global.setTimeout(() => {
+          this.setState(
+            state => ({ playing: !state.playing }),
+            this.getDatabase
+          )
+        }, 1000)
+      }
+    )
+  }
+
+  getDatabase = async () => {
+    const data = await remote.getGlobal('getData')()
+    const { rows, total_rows } = data
+    this.setState({ rows, total_rows })
+  }
+
+  componentDidMount() {
+    this.getDatabase()
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        <Header />
+        <Reader saveToDatabase={this.updateOrSaveToDatabase} />
+        <Sine playing={this.state.playing} />
+        <Table rows={this.state.rows} total_rows={this.state.total_rows} />
+      </Wrapper>
+    )
+  }
+}
 
 injectGlobal`
 @import "/static/styles/fontStylesheet.css";
