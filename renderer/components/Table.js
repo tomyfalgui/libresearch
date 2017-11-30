@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import bemto from 'bemto-components'
 
 const Table = styled.table`
-  width: 90%;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;

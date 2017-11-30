@@ -11,6 +11,9 @@ const Wrapper = styled.div`
   max-height: 100vh;
   grid-template-rows: 50px 1fr 5fr;
   grid-row-gap: 12px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 `
 
 export default class Global extends Component {
