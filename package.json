@@ -11,7 +11,8 @@
     "start": "electron .",
     "build": "next build renderer && next export renderer",
     "dist": "npm run build && build --dir --win",
-    "rebuild": "electron-rebuild"
+    "rebuild": "electron-rebuild",
+    "pack": "npm run build && build --win"
   },
   "build": {
     "files": ["**/*", "!renderer", "renderer/out"]
@@ -36,7 +37,7 @@
     "lodash": "4.17.4",
     "match-sorter": "2.2.0",
     "nedb": "1.8.0",
-    "next-redux-wrapper": "1.3.4",
+    "next-redux-wrapper": "1.3.5",
     "nivo": "0.30.0",
     "pouchdb": "6.3.4",
     "pouchdb-find": "6.3.4",
