@@ -11,7 +11,7 @@ const Table = styled.table`
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
-  height: '40vh';
+  height: 0;
 
   thead {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
@@ -79,7 +79,11 @@ function Rows({ rows }) {
           <Td>{new Date(entered).toLocaleDateString()}</Td>
           <Td>{new Date(entered).toLocaleTimeString()}</Td>
           <Td>{exited ? new Date(exited).toLocaleTimeString() : 'ehhh'}</Td>
-          <Td>{secondsToHms(total_time)}</Td>
+          <Td>
+            {typeof total_time === 'number'
+              ? secondsToHms(total_time)
+              : 'NO TIME'}
+          </Td>
         </Body>
       )
     })
@@ -113,13 +117,32 @@ export default ({ rows, total_time }) => (
     </thead>
     <tfoot>
       <Footer>
-        <FooterBody display={getYoutubeLikeToDisplay(total_time)} />
+        <FooterBody
+          display={
+            typeof total_time === 'number'
+              ? getYoutubeLikeToDisplay(total_time)
+              : 'NO TIME'
+          }
+        />
       </Footer>
       <Footer>
-        <FooterBody display={secondsToHms(total_time)} />
+        <FooterBody
+          display={
+            typeof total_time === 'number'
+              ? secondsToHms(total_time)
+              : 'NO TIME'
+          }
+        />
       </Footer>
     </tfoot>
-    <tbody style={{ overflow: 'scroll', display: 'block' }}>
+    <tbody
+      style={{
+        overflow: 'scroll',
+        display: 'block',
+        height: '35vh',
+        boxShadow: '0 10px 15px 2px  rgba(0,0,0,0.18)'
+      }}
+    >
       <Rows rows={rows} />
     </tbody>
   </Table>

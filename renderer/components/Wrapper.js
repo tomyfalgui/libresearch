@@ -6,6 +6,7 @@ import Header from './Header'
 import Table from './Table'
 import Filters from './Filters'
 import { remote, ipcRenderer } from 'electron'
+import matchSorter from 'match-sorter'
 
 const Wrapper = styled.div`
   display: grid;
@@ -51,12 +52,31 @@ export default class Global extends Component {
     const data = await remote.getGlobal('getData')()
     const { rows, total_rows } = data
     const totalTime = rows.reduce((acc, { doc }) => {
-      if (!doc.updated) {
-        return
+      if (doc.updated === true) {
+        return acc + doc.total_time
       }
-      return acc + doc.total_time
+      return acc
     }, 0)
-    this.setState({ rows, total_rows, totalTime })
+    this.setState({ rows, total_rows, totalTime }, () => {
+      console.log(this.state)
+    })
+  }
+
+  filter = (lrn, year, grade, month, time) => {
+    const { rows } = this.state
+    // try using filter lol
+    // const LRNFILTER = matchSorter(rows, lrn, { keys: ['doc.LRN'] })
+    // const YEARFILTER = matchSorter(rows, year, { keys: ['doc.date'] })
+    // const GRADEFILTER = matchSorter(rows, grade, { keys: ['doc.LRN'] })
+    // const MONTHFILTER = matchSorter(rows, month, { keys: ['doc.date'] })
+    // const TIMEFILTER = matchSorter(rows, (+time / 1000).toFixed(0), {
+    //   keys: ['doc.total_time']
+    // })
+    const search = rows.filter(({ doc }) => {
+      //if()
+      return doc.LRN.includes(lrn)
+    })
+    //console.log(search)
   }
 
   componentDidMount() {
@@ -70,7 +90,7 @@ export default class Global extends Component {
         <Header />
         <SpecialDiv>
           <Reader saveToDatabase={this.updateOrSaveToDatabase} />
-          <Filters />
+          <Filters filter={this.filter} getDate={this.getDatabase} />
         </SpecialDiv>
         <Sine playing={playing} />
         <Table rows={rows} total_rows={total_rows} total_time={totalTime} />

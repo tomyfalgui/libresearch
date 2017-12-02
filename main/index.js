@@ -35,7 +35,10 @@ app.on('ready', async () => {
 // Quit the app once all windows are closed
 app.on('window-all-closed', app.quit)
 
-const db = new PouchDB(path.join(app.getAppPath(), 'db'))
+const pathh = isDev
+  ? path.join(app.getAppPath(), 'db')
+  : path.join(app.getPath('appData'), 'db')
+const db = new PouchDB(pathh)
 var url = 'http://localhost:5984/mydb'
 var opts = { live: true, retry: true }
 
@@ -62,6 +65,8 @@ db.replicate.from(url).on('complete', function(info) {
     })
 })
 
+Date.now().toLocaleString()
+
 ipcMain.on('updateorsave:data', async (e, arg1) => {
   const result = (await db.find({
     selector: { LRN: arg1, exited: null, updated: false, total_time: null }
@@ -78,6 +83,7 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
     })).docs
     const { LRN } = onlyOne[0]
     const exited = Date.now()
+
     await db.put({
       _id: onlyOne[0]._id,
       _rev: onlyOne[0]._rev,
@@ -85,7 +91,8 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
       LRN: onlyOne[0].LRN,
       exited,
       updated: true,
-      total_time: exited - onlyOne[0].entered
+      total_time: exited - onlyOne[0].entered,
+      date: onlyOne[0].date
     })
   } else {
     await db.put({
@@ -94,7 +101,8 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
       entered: Date.now(),
       exited: null,
       updated: false,
-      total_time: null
+      total_time: null,
+      date: new Date().toDateString()
     })
   }
 
