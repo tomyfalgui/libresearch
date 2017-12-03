@@ -1,18 +1,18 @@
 {
-  "name": "electron-next-skeleton",
+  "name": "libresearch",
   "productName": "LibReasearch",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "main/index.js",
   "license": "MIT",
   "author": "Tomas Alejandro V. Falgui III <tomyfalguiiii@yahoo.com> (http://tomyfalgui.com/)",
   "description": "Library Research",
-  "repository": "leo/electron-next-skeleton",
+  "repository": "tomy8910/libresearch",
   "scripts": {
     "start": "electron .",
     "build": "next build renderer && next export renderer",
-    "dist": "npm run build && build --dir --win",
-    "rebuild": "electron-rebuild",
-    "pack": "npm run build && build --win"
+    "dist": "npm run build && build --dir --win ",
+    "postinstall": "electron-rebuild",
+    "pack": "electron-builder"
   },
   "build": {
     "files": ["**/*", "!renderer", "renderer/out"]
