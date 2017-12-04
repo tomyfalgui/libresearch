@@ -11,18 +11,33 @@ export default class extends Component {
     year: '',
     grade: '',
     month: '',
-    time: ''
+    filter: false
   }
 
   handleClick = e => {
-    const { LRN, year, grade, month, time } = this.state
+    const { LRN, year, grade, month, filter } = this.state
 
-    this.props.filter(LRN, year, grade, month, time)
+    this.props.filter(LRN, year, grade, month, filter)
   }
 
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
+    })
+  }
+
+  handleCheck = e => {
+    this.setState(state => ({ filter: !state.filter }))
+  }
+
+  handleClear = e => {
+    this.props.getData()
+    this.setState({
+      LRN: '',
+      grade: '',
+      year: '',
+      month: '',
+      filter: false
     })
   }
 
@@ -57,15 +72,17 @@ export default class extends Component {
           name="month"
           onChange={this.handleChange}
         />
-        <input
-          type="text"
-          placeholder="Time"
-          value={this.state.time}
-          name="time"
-          onChange={this.handleChange}
-        />
+        <label>
+          Updated
+          <input
+            type="checkbox"
+            placeholder="Time"
+            onChange={this.handleCheck}
+            checked={this.state.filter}
+          />
+        </label>
         <button onClick={this.handleClick}>Filter</button>
-        <button onClick={this.props.getData}>Clear Filters</button>
+        <button onClick={this.handleClear}>Clear Filters</button>
       </DivBoy>
     )
   }

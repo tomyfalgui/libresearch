@@ -11,11 +11,14 @@
     "start": "electron .",
     "build": "next build renderer && next export renderer",
     "dist": "npm run build && build --dir --win ",
-    "postinstall": "electron-rebuild",
-    "pack": "electron-builder"
+    "postinstall": "electron-rebuild"
   },
   "build": {
-    "files": ["**/*", "!renderer", "renderer/out"]
+    "files": [
+      "**/*",
+      "!renderer",
+      "renderer/out"
+    ]
   },
   "devDependencies": {
     "electron": "1.7.9",

@@ -62,21 +62,25 @@ export default class Global extends Component {
     })
   }
 
-  filter = (lrn, year, grade, month, time) => {
-    const { rows } = this.state
-    // try using filter lol
-    // const LRNFILTER = matchSorter(rows, lrn, { keys: ['doc.LRN'] })
-    // const YEARFILTER = matchSorter(rows, year, { keys: ['doc.date'] })
-    // const GRADEFILTER = matchSorter(rows, grade, { keys: ['doc.LRN'] })
-    // const MONTHFILTER = matchSorter(rows, month, { keys: ['doc.date'] })
-    // const TIMEFILTER = matchSorter(rows, (+time / 1000).toFixed(0), {
-    //   keys: ['doc.total_time']
-    // })
-    const search = rows.filter(({ doc }) => {
-      //if()
-      return doc.LRN.includes(lrn)
-    })
-    //console.log(search)
+  filter = (lrn, year, grade, month, filter) => {
+    let rows = [...this.state.rows]
+
+    if (lrn) {
+      rows = rows.filter(({ doc }) => doc.LRN.includes(lrn))
+    }
+    if (year) {
+      rows = rows.filter(({ doc }) => doc.date.includes(year))
+    }
+    if (grade) {
+      rows = rows.filter(({ doc }) => doc.grade.includes(grade))
+    }
+    if (month) {
+      rows = rows.filter(({ doc }) => doc.date.includes(month.toLowerCase()))
+    }
+    if (filter) {
+      rows = rows.filter(({ doc }) => doc.updated === true)
+    }
+    this.setState({ rows })
   }
 
   componentDidMount() {
@@ -90,7 +94,7 @@ export default class Global extends Component {
         <Header />
         <SpecialDiv>
           <Reader saveToDatabase={this.updateOrSaveToDatabase} />
-          <Filters filter={this.filter} getDate={this.getDatabase} />
+          <Filters filter={this.filter} getData={this.getDatabase} />
         </SpecialDiv>
         <Sine playing={playing} />
         <Table rows={rows} total_rows={total_rows} total_time={totalTime} />

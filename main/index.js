@@ -149,8 +149,9 @@ db.replicate.from(url).on('complete', function(info) {
 })
 
 ipcMain.on('updateorsave:data', async (e, arg1) => {
+  const [LRN, grade] = arg1.split('-')
   const result = (await db.find({
-    selector: { LRN: arg1, exited: null, updated: false, total_time: null }
+    selector: { LRN, grade, exited: null, updated: false, total_time: null }
   })).docs
   if (result.length) {
     const [first] = result
@@ -170,6 +171,7 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
       _rev: onlyOne[0]._rev,
       entered: onlyOne[0].entered,
       LRN: onlyOne[0].LRN,
+      grade: onlyOne[0].grade,
       exited,
       updated: true,
       total_time: exited - onlyOne[0].entered,
@@ -178,7 +180,8 @@ ipcMain.on('updateorsave:data', async (e, arg1) => {
   } else {
     await db.put({
       _id: uuid(),
-      LRN: arg1,
+      LRN,
+      grade,
       entered: Date.now(),
       exited: null,
       updated: false,

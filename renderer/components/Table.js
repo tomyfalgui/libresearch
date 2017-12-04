@@ -72,10 +72,12 @@ function Rows({ rows }) {
   return (
     rows &&
     rows.sort((a, b) => a.doc.entered < b.doc.entered).map(({ doc }) => {
-      const { total_time, _id, entered, exited, LRN } = doc
+      const { total_time, _id, entered, exited, LRN, grade } = doc
       return (
         <Body key={_id}>
-          <Td2>{LRN}</Td2>
+          <Td2>
+            {LRN}-{grade}
+          </Td2>
           <Td>{new Date(entered).toLocaleDateString()}</Td>
           <Td>{new Date(entered).toLocaleTimeString()}</Td>
           <Td>{exited ? new Date(exited).toLocaleTimeString() : 'ehhh'}</Td>
