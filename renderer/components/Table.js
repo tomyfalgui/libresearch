@@ -141,7 +141,7 @@ export default ({ rows, total_time }) => (
       style={{
         overflow: 'scroll',
         display: 'block',
-        height: '35vh',
+        maxHeight: '35vh',
         boxShadow: '0 10px 15px 2px  rgba(0,0,0,0.18)'
       }}
     >

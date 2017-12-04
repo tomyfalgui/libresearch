@@ -6,7 +6,9 @@ import Header from './Header'
 import Table from './Table'
 import Filters from './Filters'
 import { remote, ipcRenderer } from 'electron'
-import matchSorter from 'match-sorter'
+import * as XLSX from 'xlsx'
+import Export from './Export'
+import _ from 'lodash'
 
 const Wrapper = styled.div`
   display: grid;
@@ -57,9 +59,7 @@ export default class Global extends Component {
       }
       return acc
     }, 0)
-    this.setState({ rows, total_rows, totalTime }, () => {
-      console.log(this.state)
-    })
+    this.setState({ rows, total_rows, totalTime })
   }
 
   filter = (lrn, year, grade, month, filter) => {
@@ -83,6 +83,17 @@ export default class Global extends Component {
     this.setState({ rows })
   }
 
+  export = e => {
+    const desktop = remote.app.getPath('desktop')
+    const wb = { SheetNames: [], Sheets: {} }
+
+    const mapped_data = _.groupBy(this.state.rows, function(el) {
+      const { doc } = el
+      let { date } = doc
+      date = date.split(' ')
+      return `${date[1].toLowerCase()}${date[3]}`
+    })
+  }
   componentDidMount() {
     this.getDatabase()
   }
@@ -94,7 +105,10 @@ export default class Global extends Component {
         <Header />
         <SpecialDiv>
           <Reader saveToDatabase={this.updateOrSaveToDatabase} />
-          <Filters filter={this.filter} getData={this.getDatabase} />
+          <div>
+            <Filters filter={this.filter} getData={this.getDatabase} />
+            <Export export={this.export} />
+          </div>
         </SpecialDiv>
         <Sine playing={playing} />
         <Table rows={rows} total_rows={total_rows} total_time={totalTime} />

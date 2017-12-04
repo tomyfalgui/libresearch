@@ -122,7 +122,7 @@ const pathh = isDev
   ? path.join(app.getAppPath(), 'db')
   : path.join(app.getPath('appData'), 'db')
 const db = new PouchDB(pathh)
-var url = 'http://localhost:5984/mydb'
+var url = 'https://tomy8910.cloudant.com/myapp'
 var opts = { live: true, retry: true }
 
 db.replicate.from(url).on('complete', function(info) {
