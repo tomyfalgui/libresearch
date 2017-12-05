@@ -9,6 +9,8 @@ import { remote, ipcRenderer } from 'electron'
 import * as XLSX from 'xlsx'
 import Export from './Export'
 import _ from 'lodash'
+import path from 'path'
+import { getYoutubeLikeToDisplay } from '../helpers'
 
 const Wrapper = styled.div`
   display: grid;
@@ -92,6 +94,46 @@ export default class Global extends Component {
       let { date } = doc
       date = date.split(' ')
       return `${date[1].toLowerCase()}${date[3]}`
+    })
+
+    let array = []
+    let i = 0
+    for (let value of Object.keys(mapped_data)) {
+      for (let obj of mapped_data[value]) {
+        array[i++] = obj.doc
+      }
+    }
+
+    array = array.map(el => {
+      return {
+        LRN: el.LRN,
+        date: el.date,
+        entered: new Date(el.entered).toLocaleTimeString(),
+        exited: el.exited
+          ? new Date(el.exited).toLocaleTimeString()
+          : 'NO EXIT',
+        grade: el.grade,
+        total_time: getYoutubeLikeToDisplay(el.total_time)
+      }
+    })
+
+    var ws = XLSX.utils.json_to_sheet(array, {
+      header: ['LRN', 'date', 'entered', 'exited', 'grade', 'total_time']
+    })
+
+    wb.SheetNames.push('hehe')
+    wb.Sheets['hehe'] = ws
+    XLSX.writeFile(
+      wb,
+      path.join(desktop, `${'niggakids'}-${Date.now()}.xlsx`),
+      {
+        bookType: 'xlsx'
+      }
+    )
+    remote.dialog.showMessageBox(null, {
+      type: 'info',
+      title: 'Saved File',
+      message: `Data is saved in ${'niggakids'}-${Date.now()}.xlsx`
     })
   }
   componentDidMount() {

@@ -14,9 +14,14 @@ export default class Scanner extends Component {
 
   handleScan = result => {
     if (result) {
-      this.setState({ result }, () => {
-        this.props.saveToDatabase(this.state.result)()
-      })
+      if((result.split('-')).length === 2) {
+        this.setState({ result }, () => {
+          this.props.saveToDatabase(this.state.result)()
+        })
+      } else {
+        global.alert("YOU THINK YOU POOLING ME?!!!")
+      }
+
     }
   }
 
