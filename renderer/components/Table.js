@@ -42,6 +42,7 @@ const Body = styled.tr`
   padding-top: 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.18);
   padding-bottom: 16px;
+  position: relative;
 
   .tcell {
     flex: 1;
@@ -67,8 +68,11 @@ const Td = styled.td`
 const Td2 = Td.extend`
   flex: 2;
 `
+const Td05 = Td.extend`
+  flex: 0.5;
+`
 
-function Rows({ rows }) {
+function Rows({ rows, deletes }) {
   return (
     rows &&
     rows.sort((a, b) => a.doc.entered < b.doc.entered).map(({ doc }) => {
@@ -86,6 +90,9 @@ function Rows({ rows }) {
               ? secondsToHms(total_time)
               : 'NO TIME'}
           </Td>
+          <Td05 onClick={deletes.bind(this, doc)}>
+            <button>X</button>
+          </Td05>
         </Body>
       )
     })
@@ -102,11 +109,12 @@ function FooterBody({ display }) {
       <td style={{ flex: 1 }} key={5}>
         {display}
       </td>
+      <td style={{ flex: 0.5 }} key={6} />
     </Fragment>
   )
 }
 
-export default ({ rows, total_time }) => (
+export default ({ rows, total_time, deleteDoc }) => (
   <Table>
     <thead style={{ position: 'relative', display: 'block' }}>
       <Header>
@@ -115,6 +123,7 @@ export default ({ rows, total_time }) => (
         <th className="theader">Time of Entry</th>
         <th className="theader">Time of Exit</th>
         <th className="theader">Total Time</th>
+        <th style={{ flex: 0.5 }} />
       </Header>
     </thead>
     <tfoot>
@@ -139,13 +148,30 @@ export default ({ rows, total_time }) => (
     </tfoot>
     <tbody
       style={{
-        overflow: 'scroll',
+        overflowY: 'auto',
         display: 'block',
         maxHeight: '35vh',
-        boxShadow: '0 10px 15px 2px  rgba(0,0,0,0.18)'
+        boxShadow: '0 10px 15px 2px  rgba(0,0,0,0.18)',
+        position: 'relative'
       }}
     >
-      <Rows rows={rows} />
+      <Rows rows={rows} deletes={deleteDoc} />
     </tbody>
   </Table>
 )
+
+const Option = styled.div`
+  display: flex;
+  padding-top: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+  padding-bottom: 16px;
+  position: absolute;
+`
+
+function Options() {
+  return (
+    <Option>
+      <span>X</span>
+    </Option>
+  )
+}

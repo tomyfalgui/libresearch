@@ -52,6 +52,11 @@ export default class Global extends Component {
     )
   }
 
+  deleteDocument = async doc => {
+    const deleteDoc = await remote.getGlobal('delete')(doc)
+    this.getDatabase()
+  }
+
   getDatabase = async () => {
     const data = await remote.getGlobal('getData')()
     const { rows, total_rows } = data
@@ -153,7 +158,12 @@ export default class Global extends Component {
           </div>
         </SpecialDiv>
         <Sine playing={playing} />
-        <Table rows={rows} total_rows={total_rows} total_time={totalTime} />
+        <Table
+          rows={rows}
+          total_rows={total_rows}
+          total_time={totalTime}
+          deleteDoc={this.deleteDocument}
+        />
       </Wrapper>
     )
   }

@@ -125,28 +125,26 @@ const db = new PouchDB(pathh)
 var url = 'https://tomy8910.cloudant.com/myapp'
 var opts = { live: true, retry: true }
 
-db.replicate.from(url).on('complete', function(info) {
-  db
-    .sync(url, opts)
-    .on('change', info => {
-      console.log('change:' + info)
-    })
-    .on('paused', paused => {
-      console.log('paused' + paused)
-    })
-    .on('error', err => {
-      console.log('error:' + err)
-    })
-    .on('complete', _ => {
-      console.log('completed:')
-    })
-    .on('active', _ => {
-      console.log('Active:')
-    })
-    .on('denied', err => {
-      console.log('Denied:' + err)
-    })
-})
+db
+  .sync(url, opts)
+  .on('change', info => {
+    console.log('change:' + info)
+  })
+  .on('paused', paused => {
+    console.log('paused' + paused)
+  })
+  .on('error', err => {
+    console.log('error:' + err)
+  })
+  .on('complete', _ => {
+    console.log('completed:')
+  })
+  .on('active', _ => {
+    console.log('Active:')
+  })
+  .on('denied', err => {
+    console.log('Denied:' + err)
+  })
 
 ipcMain.on('updateorsave:data', async (e, arg1) => {
   const [LRN, grade] = arg1.split('-')
@@ -225,4 +223,12 @@ global.getData = async function() {
     attachments: true
   })
   return result
+}
+
+global.delete = async function(doc) {
+  try {
+    var response = await db.remove(doc)
+  } catch (err) {
+    console.log(err)
+  }
 }
