@@ -53,8 +53,22 @@ export default class Global extends Component {
   }
 
   deleteDocument = async doc => {
-    const deleteDoc = await remote.getGlobal('delete')(doc)
-    this.getDatabase()
+    remote.dialog.showMessageBox(
+      {
+        type: 'info',
+        message: 'Delete?',
+        detail: 'Are you sure you want to delete the table entry?',
+        buttons: ['No', 'Yes']
+      },
+      async (res) => {
+        if (res === 1) {
+          const deleteDoc = await remote.getGlobal('delete')(doc)
+          this.getDatabase()
+        } else {
+          console.log('NOPE')
+        }
+      }
+    )
   }
 
   getDatabase = async () => {
