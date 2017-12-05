@@ -10,7 +10,7 @@
   "scripts": {
     "start": "electron .",
     "build": "next build renderer && next export renderer",
-    "dist": "npm run build && electron-builder",
+    "dist": "npm run build && electron-builder --dir --win",
     "postinstall": "electron-rebuild"
   },
   "build": {
