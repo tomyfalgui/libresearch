@@ -141,10 +141,6 @@ export default class Global extends Component {
           total_time: doc.total_time
         }
       })
-      /*
-          Find a way to include total time per month at the 
-          bottom most of the worksheet
-        */
 
       const totol = arr.reduce(
         (acc, cur) => (cur.total_time ? cur.total_time + acc : acc),
