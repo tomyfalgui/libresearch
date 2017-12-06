@@ -82,7 +82,7 @@ function Rows({ rows, deletes }) {
           <Td2>
             {LRN}-{grade}
           </Td2>
-          <Td>{new Date(entered).toLocaleDateString()}</Td>
+          <Td>{doc.date}</Td>
           <Td>{new Date(entered).toLocaleTimeString()}</Td>
           <Td>{exited ? new Date(exited).toLocaleTimeString() : 'ehhh'}</Td>
           <Td>

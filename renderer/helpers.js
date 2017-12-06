@@ -1,5 +1,5 @@
 export function secondsToHms(ms) {
-  let seconds = (ms / 1000).toFixed(0)
+  let seconds = Math.round(ms / 1000)
   let d = +seconds
   let h = Math.floor(d / 3600)
   let m = Math.floor((d % 3600) / 60)
@@ -12,7 +12,7 @@ export function secondsToHms(ms) {
 }
 
 export function getYoutubeLikeToDisplay(millisec) {
-  var seconds = (millisec / 1000).toFixed(0)
+  var seconds = Math.round(millisec / 1000)
   var minutes = Math.floor(seconds / 60)
   var hours = ''
   if (minutes > 59) {

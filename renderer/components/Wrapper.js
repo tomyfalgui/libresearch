@@ -10,7 +10,10 @@ import * as XLSX from 'xlsx'
 import Export from './Export'
 import _ from 'lodash'
 import path from 'path'
+import uuid from 'uuid/v4'
 import { getYoutubeLikeToDisplay } from '../helpers'
+import matchSorter from 'match-sorter'
+import { differenceInMilliseconds } from 'date-fns'
 
 const Wrapper = styled.div`
   display: grid;
@@ -60,7 +63,7 @@ export default class Global extends Component {
         detail: 'Are you sure you want to delete the table entry?',
         buttons: ['No', 'Yes']
       },
-      async (res) => {
+      async res => {
         if (res === 1) {
           const deleteDoc = await remote.getGlobal('delete')(doc)
           this.getDatabase()
@@ -96,63 +99,76 @@ export default class Global extends Component {
       rows = rows.filter(({ doc }) => doc.grade.includes(grade))
     }
     if (month) {
-      rows = rows.filter(({ doc }) => doc.date.includes(month.toLowerCase()))
+      rows = rows.filter(({ doc }) =>
+        doc.date.toLowerCase().includes(month.toLowerCase())
+      )
     }
     if (filter) {
       rows = rows.filter(({ doc }) => doc.updated === true)
     }
-    this.setState({ rows })
+    const totalTime = rows.reduce((acc, { doc }) => {
+      if (doc.updated === true) {
+        return acc + doc.total_time
+      }
+      return acc
+    }, 0)
+    this.setState({ rows, totalTime })
   }
 
   export = e => {
     const desktop = remote.app.getPath('desktop')
     const wb = { SheetNames: [], Sheets: {} }
-
     const mapped_data = _.groupBy(this.state.rows, function(el) {
       const { doc } = el
       let { date } = doc
       date = date.split(' ')
       return `${date[1].toLowerCase()}${date[3]}`
     })
+    Object.keys(mapped_data).forEach(els => {
+      let arr = mapped_data[els]
 
-    let array = []
-    let i = 0
-    for (let value of Object.keys(mapped_data)) {
-      for (let obj of mapped_data[value]) {
-        array[i++] = obj.doc
-      }
-    }
+      arr = arr.map(({ doc }) => {
+        let fixedDisplay = getYoutubeLikeToDisplay(doc.total_time)
+        return {
+          LRN: doc.LRN,
+          date: doc.date,
+          entered: new Date(doc.entered).toLocaleTimeString(),
+          exited: doc.exited
+            ? new Date(doc.exited).toLocaleTimeString()
+            : 'NO EXIT',
+          grade: doc.grade,
+          display_total_time: fixedDisplay,
+          total_time: doc.total_time
+        }
+      })
+      /*
+          Find a way to include total time per month at the 
+          bottom most of the worksheet
+        */
 
-    array = array.map(el => {
-      return {
-        LRN: el.LRN,
-        date: el.date,
-        entered: new Date(el.entered).toLocaleTimeString(),
-        exited: el.exited
-          ? new Date(el.exited).toLocaleTimeString()
-          : 'NO EXIT',
-        grade: el.grade,
-        total_time: getYoutubeLikeToDisplay(el.total_time)
-      }
+      const totol = arr.reduce(
+        (acc, cur) => (cur.total_time ? cur.total_time + acc : acc),
+        0
+      )
+
+      let ws = XLSX.utils.json_to_sheet([
+        ...arr,
+        { totol: getYoutubeLikeToDisplay(totol) }
+      ])
+      wb.SheetNames.push(els)
+      wb.Sheets[els] = ws
     })
 
-    var ws = XLSX.utils.json_to_sheet(array, {
-      header: ['LRN', 'date', 'entered', 'exited', 'grade', 'total_time']
+    const hash = uuid()
+    XLSX.writeFile(wb, path.join(desktop, `${'datafile'}-${hash}.xlsx`), {
+      bookType: 'xlsx'
     })
-
-    wb.SheetNames.push('hehe')
-    wb.Sheets['hehe'] = ws
-    XLSX.writeFile(
-      wb,
-      path.join(desktop, `${'niggakids'}-${Date.now()}.xlsx`),
-      {
-        bookType: 'xlsx'
-      }
-    )
     remote.dialog.showMessageBox(null, {
       type: 'info',
       title: 'Saved File',
-      message: `Data is saved in ${'niggakids'}-${Date.now()}.xlsx`
+      message: `Data is saved in your desktop with filename: ${'datafile'}-${
+        hash
+      }.xlsx`
     })
   }
   componentDidMount() {

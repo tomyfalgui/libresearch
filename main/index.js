@@ -122,7 +122,9 @@ const pathh = isDev
   ? path.join(app.getAppPath(), 'db')
   : path.join(app.getPath('appData'), 'db')
 const db = new PouchDB(pathh)
-var url = 'https://tomy8910.cloudant.com/myapp'
+var url = isDev
+  ? 'http://localhost:5984/mydb'
+  : 'https://tomy8910.cloudant.com/myapp'
 var opts = { live: true, retry: true }
 
 db
