@@ -1,7 +1,7 @@
 {
   "name": "libresearch",
   "productName": "LibReasearch",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "main/index.js",
   "license": "MIT",
   "author": "Tomas Alejandro V. Falgui III <tomyfalguiiii@yahoo.com> (http://tomyfalgui.com/)",
