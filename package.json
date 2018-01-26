@@ -11,10 +11,9 @@
     "start": "electron .",
     "build": "next build renderer && next export renderer",
     "dist": "npm run build && electron-builder --win",
-    "beat":"DEBUG=electron-builder",
-    "dev:build":"electron-rebuild",
-    "postinstall11": "electron-builder install-app-deps",
-    "postinstall": "cd node_modules/leveldown && node-gyp rebuild --target=1.7.9 --arch=ia32 --dist-url=https://atom.io/download/atom-shell"
+    "beat": "DEBUG=electron-builder",
+    "dev:build": "electron-rebuild",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "files": [
