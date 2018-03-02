@@ -14,14 +14,13 @@ export default class Scanner extends Component {
 
   handleScan = result => {
     if (result) {
-      if((result.split('-')).length === 2) {
+      if (result.split('-').length === 2) {
         this.setState({ result }, () => {
           this.props.saveToDatabase(this.state.result)()
         })
       } else {
-        global.alert("YOU THINK YOU POOLING ME?!!!")
+        global.alert('YOU THINK YOU POOLING ME?!!!')
       }
-
     }
   }
 
@@ -36,7 +35,11 @@ export default class Scanner extends Component {
     }
 
     return (
-      <div>
+      <div
+        style={{
+          marginBottom: '2em'
+        }}
+      >
         <QrReader
           delay={this.state.delay}
           style={previewStyle}

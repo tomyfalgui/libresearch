@@ -27,8 +27,10 @@ const Wrapper = styled.div`
 
 const SpecialDiv = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
 `
-
+//#region
 export default class Global extends Component {
   state = {
     playing: false,
@@ -162,11 +164,11 @@ export default class Global extends Component {
     remote.dialog.showMessageBox(null, {
       type: 'info',
       title: 'Saved File',
-      message: `Data is saved in your desktop with filename: ${'datafile'}-${
-        hash
-      }.xlsx`
+      message: `Data is saved in your desktop with filename: ${'datafile'}-${hash}.xlsx`
     })
   }
+
+  // //#endregion
   componentDidMount() {
     this.getDatabase()
   }
@@ -180,7 +182,6 @@ export default class Global extends Component {
           <Reader saveToDatabase={this.updateOrSaveToDatabase} />
           <div>
             <Filters filter={this.filter} getData={this.getDatabase} />
-            <Export export={this.export} />
           </div>
         </SpecialDiv>
         <Sine playing={playing} />
@@ -213,7 +214,7 @@ injectGlobal`
     margin:0;
     padding:0;
   }
-  
- 
+
+
 
 `

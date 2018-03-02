@@ -10,7 +10,7 @@
   "scripts": {
     "start": "electron .",
     "build": "next build renderer && next export renderer",
-    "dist": "npm run build && electron-builder --win",
+    "dist": "npm run build && electron-builder --win --publish",
     "beat": "DEBUG=electron-builder",
     "dev:build": "electron-rebuild",
     "postinstall": "electron-builder install-app-deps"

@@ -4,6 +4,6 @@ const Header = styled.header``
 
 export default () => (
   <Header>
-    <h1>Library</h1>
+    <h1 />
   </Header>
 )
